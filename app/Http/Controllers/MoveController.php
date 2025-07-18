@@ -29,7 +29,7 @@ class MoveController extends Controller
                 $move = $response->json();
 
                 // 3. 取得した生JSONデータの確認
-                // dd($move);
+                // dd($move['names']);
 
                 // 日本語の技名を取得する（あれば）
                 $japaneseMoveName = collect($move['names'])->firstWhere('language.name', 'ja')['name'] ?? $move['name'];

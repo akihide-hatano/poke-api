@@ -80,6 +80,21 @@
                         @else
                             <p class="text-gray-600">特性情報がありません。</p>
                         @endif
+                        {{-- 技 --}}
+                        <h2 class="section-title text-3xl text-gray-700 mt-8 mb-4 border-b-2 border-gray-200 pb-2">覚える技</h2>
+                        @if(isset($pokemon['moves']) && count($pokemon['moves']) > 0)
+                            <div class="max-h-60 overflow-y-auto border border-gray-200 rounded-lg p-3 bg-gray-50">
+                                <ul class="list-items list-none p-0 flex flex-wrap gap-2 justify-center">
+                                    @foreach($pokemon['moves'] as $moveInfo)
+                                        <li class="bg-purple-100 text-purple-800 px-3 py-1.5 rounded-full text-base capitalize shadow-sm">
+                                            {{ ucfirst(str_replace('-', ' ', $moveInfo['move']['name'])) }}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @else
+                            <p class="text-gray-600">覚える技情報がありません。</p>
+                        @endif
 
                         {{-- 種族値 --}}
                         <h2 class="section-title text-3xl text-gray-700 mt-8 mb-4 border-b-2 border-gray-200 pb-2">種族値</h2>

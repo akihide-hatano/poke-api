@@ -1,121 +1,46 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ポケモン図鑑</title>
-    <!-- Tailwind CSS (Breezeが導入されていれば自動的に読み込まれます) -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f0f0f0; margin: 0; padding: 20px; display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; min-height: 100vh; }
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5rem;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-        .pokemon-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            padding: 20px;
-        }
-        .pokemon-card {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            overflow: hidden;
-            text-align: center;
-            padding: 15px;
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            border: 1px solid #e0e0e0;
-        }
-        .pokemon-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-        .pokemon-card img {
-            max-width: 100px;
-            height: auto;
-            margin: 0 auto 10px auto;
-            display: block;
-        }
-        .pokemon-card h2 {
-            font-size: 1.2rem;
-            color: #333;
-            margin-bottom: 5px;
-            text-transform: capitalize; /* 最初の文字を大文字に */
-        }
-        .pokemon-card p {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 3px;
-        }
-        .pokemon-card ul {
-            list-style: none;
-            padding: 0;
-            margin-top: 10px;
-        }
-        .pokemon-card ul li {
-            background-color: #e6f7ff;
-            color: #007bff;
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 5px;
-            margin: 2px;
-            font-size: 0.8em;
-            text-transform: capitalize;
-        }
-        .no-pokemon {
-            text-align: center;
-            color: #777;
-            font-size: 1.2rem;
-            padding: 50px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>ポケモン図鑑</h1>
+<x-app-layout>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                <h1 class="text-gray-800 text-center mb-8 text-4xl font-extrabold drop-shadow-md">ポケモン図鑑</h1>
 
-        @if(isset($detailedPokemonList) && count($detailedPokemonList) > 0)
-            <div class="pokemon-grid">
-                @foreach($detailedPokemonList as $pokemon)
-                    <div class="pokemon-card">
-                        @if(isset($pokemon['sprites']['front_default']))
-                            <img src="{{ $pokemon['sprites']['front_default'] }}" alt="{{ $pokemon['name'] }}">
-                        @else
-                            <img src="https://placehold.co/100x100/eeeeee/333333?text=No+Image" alt="No Image">
-                        @endif
-                        <h2>{{ ucfirst($pokemon['name']) }}</h2>
-                        <p>ID: {{ $pokemon['id'] }}</p>
-                        <p>高さ: {{ $pokemon['height'] / 10 }} m</p>
-                        <p>重さ: {{ $pokemon['weight'] / 10 }} kg</p>
-
-                        <h3>タイプ</h3>
-                        <ul>
-                            @foreach($pokemon['types'] as $typeInfo)
-                                <li>{{ ucfirst($typeInfo['type']['name']) }}</li>
-                            @endforeach
-                        </ul>
+                {{-- エラーメッセージの表示 --}}
+                @if(session('error'))
+                    <div class="bg-red-100 text-red-700 border border-red-300 p-3 mb-5 rounded-md text-center">
+                        {{ session('error') }}
                     </div>
-                @endforeach
+                @endif
+
+                @if(isset($detailedPokemonList) && count($detailedPokemonList) > 0)
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-5">
+                        @foreach($detailedPokemonList as $pokemon)
+                            {{-- 各ポケモンカードを詳細ページへのリンクにする --}}
+                            <a href="{{ route('pokemons.show', ['pokemon' => $pokemon['name']]) }}" class="pokemon-card bg-white rounded-lg shadow-md overflow-hidden text-center p-4 transition-all duration-200 ease-in-out border border-gray-200 no-underline text-inherit block hover:translate-y-[-5px] hover:shadow-xl">
+                                @if(isset($pokemon['sprites']['front_default']))
+                                    <img src="{{ $pokemon['sprites']['front_default'] }}" alt="{{ $pokemon['name'] }}" class="max-w-[100px] h-auto mx-auto mb-3 block">
+                                @else
+                                    <img src="https://placehold.co/100x100/eeeeee/333333?text=No+Image" alt="No Image" class="max-w-[100px] h-auto mx-auto mb-3 block">
+                                @endif
+                                <h2 class="text-xl text-gray-700 mb-1 capitalize">{{ ucfirst($pokemon['name']) }}</h2>
+                                <p class="text-sm text-gray-600 mb-1">ID: {{ $pokemon['id'] }}</p>
+                                <p class="text-sm text-gray-600 mb-1">高さ: {{ $pokemon['height'] / 10 }} m</p>
+                                <p class="text-sm text-gray-600 mb-1">重さ: {{ $pokemon['weight'] / 10 }} kg</p>
+
+                                <h3 class="text-base text-gray-700 mt-2">タイプ</h3>
+                                <ul class="list-none p-0 mt-2 flex flex-wrap justify-center gap-1">
+                                    @foreach($pokemon['types'] as $typeInfo)
+                                        <li class="bg-blue-100 text-blue-700 inline-block px-2 py-1 rounded-full m-0.5 text-xs capitalize shadow-sm">
+                                            {{ ucfirst($typeInfo['type']['name']) }}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </a>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-center text-gray-500 text-lg p-12">ポケモンデータが見つかりませんでした。</p>
+                @endif
             </div>
-        @else
-            <p class="no-pokemon">ポケモンデータが見つかりませんでした。</p>
-        @endif
+        </div>
     </div>
-</body>
-</html>
+</x-app-layout>

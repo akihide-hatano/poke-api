@@ -19,6 +19,6 @@ Route::middleware('auth')->group(function () {
 });
 
 // ポケモン一覧ページを表示するルート
-Route::get('/pokemons-list', [PokemonController::class, 'showIndexPage']);
+Route::resource('pokemons', PokemonController::class)->only(['index', 'show']);
 
 require __DIR__.'/auth.php';

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PokemonController;
+use App\Http\Controllers\MoveController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -20,5 +22,9 @@ Route::middleware('auth')->group(function () {
 
 // ポケモン一覧ページを表示するルート
 Route::resource('pokemons', PokemonController::class)->only(['index', 'show']);
+//技一覧ページを表示する
+Route::resource('move', PokemonController::class)->only(['index', 'show']);
+
+
 
 require __DIR__.'/auth.php';

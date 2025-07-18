@@ -17,13 +17,25 @@ class MoveController extends Controller
     public function show($name)
     {
         try {
+            // 1. PokeAPIへのリクエスト直後にdd()
+            // dd("Attempting to fetch move: {$name}");
+
             $response = Http::get("https://pokeapi.co/api/v2/move/{$name}/");
+
+            // 2. レスポンスオブジェクトの確認
+            // dd($response);
 
             if ($response->successful()) {
                 $move = $response->json();
 
+                // 3. 取得した生JSONデータの確認
+                // dd($move);
+
                 // 日本語の技名を取得する（あれば）
                 $japaneseMoveName = collect($move['names'])->firstWhere('language.name', 'ja')['name'] ?? $move['name'];
+
+                // 4. 日本語技名と元の技名の確認
+                // dd(['japaneseName' => $japaneseMoveName, 'originalName' => $move['name']]);
 
                 // その技を覚えるポケモンのリスト
                 $learnedByPokemon = [];
@@ -40,6 +52,13 @@ class MoveController extends Controller
                     }
                 }
 
+                // 5. 最終的にビューに渡すデータの確認
+                // dd([
+                //     'move' => $move,
+                //     'japaneseMoveName' => $japaneseMoveName,
+                //     'learnedByPokemon' => $learnedByPokemon,
+                // ]);
+
                 return view('moves.show', [
                     'move' => $move,
                     'japaneseMoveName' => $japaneseMoveName,
@@ -48,9 +67,11 @@ class MoveController extends Controller
 
             } else {
                 // エラーハンドリング
+                // dd("Failed to fetch move: {$name}. Status: " . $response->status());
                 abort(404, 'Move not found.');
             }
         } catch (\Exception $e) {
+            // dd("Exception caught: " . $e->getMessage());
             abort(500, 'An error occurred while fetching move data: ' . $e->getMessage());
         }
     }
@@ -64,29 +85,32 @@ class MoveController extends Controller
     public function index() // Route::resource の 'index' アクションに対応
     {
         try {
-            // PokeAPIから技のリストを取得 (例: 最初の200件)
-            // 技も非常に多いため、必要に応じてlimitを調整してください
+            // 1. PokeAPIへのリクエスト直前にdd()
+            // dd("Attempting to fetch move list.");
+
             $response = Http::get("https://pokeapi.co/api/v2/move/", [
                 'limit' => 200, // 最初の200件を取得
                 'offset' => 0,
             ]);
 
+            // 2. レスポンスオブジェクトの確認
+            // dd($response);
+
             if ($response->successful()) {
                 $data = $response->json();
                 $moveList = $data['results']; // 技の名前とURLのリスト
 
-                // 各技の日本語名やタイプなどの詳細情報を取得（オプション）
-                // ここではシンプルに名前だけ表示するため、追加のAPIリクエストは行いません。
-                // もし技のタイプや効果なども一覧に表示したい場合は、
-                // ここで各技のURLに対して追加のAPIリクエストを行う必要があります。
-                // その場合、大量のAPIリクエストが発生する可能性があるので注意してください。
+                // 3. 取得した技リストの確認
+                // dd($moveList);
 
                 return view('moves.index', compact('moveList'));
 
             } else {
+                // dd("Failed to fetch move list. Status: " . $response->status());
                 return view('error')->with('message', '技リストの取得に失敗しました。ステータスコード: ' . $response->status());
             }
         } catch (\Exception $e) {
+            // dd("Exception caught: " . $e->getMessage());
             return view('error')->with('message', '技リストの取得中にエラーが発生しました: ' . $e->getMessage());
         }
     }

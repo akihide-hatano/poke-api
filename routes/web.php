@@ -23,7 +23,7 @@ Route::middleware('auth')->group(function () {
 // ポケモン一覧ページを表示するルート
 Route::resource('pokemons', PokemonController::class)->only(['index', 'show']);
 //技一覧ページを表示する
-Route::resource('move', PokemonController::class)->only(['index', 'show']);
+Route::resource('moves', MoveController::class)->only(['index', 'show']);
 
 
 

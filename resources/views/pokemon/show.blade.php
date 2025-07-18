@@ -21,6 +21,18 @@
                             <img src="https://placehold.co/200x200/eeeeee/333333?text=No+Image" alt="No Image" class="pokemon-image max-w-[200px] h-auto mx-auto mb-6 block border-2 border-gray-300 rounded-full bg-gray-50 p-2 shadow-md">
                         @endif
 
+                        {{-- 鳴き声再生ボタン --}}
+                        @if(isset($pokemon['cries']['latest']))
+                            <div class="mb-6">
+                                <audio controls class="w-full max-w-xs mx-auto">
+                                    <source src="{{ $pokemon['cries']['latest'] }}" type="audio/ogg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </div>
+                        @else
+                            <p class="text-gray-600 mb-6">鳴き声データがありません。</p>
+                        @endif
+
                         {{-- 基本情報 --}}
                         <div class="info-grid grid grid-cols-2 gap-4 mb-6 text-left">
                             <div class="info-item bg-gray-50 p-3 rounded-lg border border-gray-200">
@@ -33,7 +45,7 @@
                             </div>
                             <div class="info-item bg-gray-50 p-3 rounded-lg border border-gray-200">
                                 <span class="font-bold text-gray-600 block mb-1 text-sm">重さ:</span>
-                                <p class="m-0 text-lg text-gray-800">{{ isset($pokemon['weight']) ? ($pokemon['weight'] / 10) . ' kg' : 'N/A' }}</p>
+                                <p class="m-0 text-lg text-gray-800">{{ isset($pokemon['weight']) ? ($pokemon['weight'] / 10) . ' kg' : 'N/A'}}</p>
                             </div>
                             <div class="info-item bg-gray-50 p-3 rounded-lg border border-gray-200">
                                 <span class="font-bold text-gray-600 block mb-1 text-sm">経験値:</span>
@@ -79,6 +91,7 @@
                                         <span class="stat-value float-right font-bold text-gray-700">{{ $statInfo['base_stat'] }}</span>
                                         <div class="stat-bar-container w-full bg-gray-200 rounded-full h-2.5 mt-1 overflow-hidden">
                                             {{-- ベース値を最大255としてパーセンテージを計算 --}}
+                                            <div class="stat-bar h-full bg-green-500 rounded-full transition-all duration-500 ease-in-out" style="width: {{ ($statInfo['base_stat'] / 255) * 100 }}%;"></div>
                                         </div>
                                     </div>
                                 @endforeach

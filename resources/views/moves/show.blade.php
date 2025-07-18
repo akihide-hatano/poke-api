@@ -1,13 +1,18 @@
 <x-app-layout>
-    <div class="py-12">
+    <div class="py-12 bg-gray-100"> {{-- 背景色を少し明るくして、カードとのコントラストを出す --}}
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <div class="flex justify-center items-center min-h-screen bg-blue-50 p-5">
+                {{-- flex justify-center items-center min-h-screen bg-blue-50 p-5 を削除または修正 --}}
+                {{-- x-app-layout の中で画面中央に配置されるため、これらのクラスは不要か、調整が必要 --}}
+                <div class="flex flex-col items-center p-5"> {{-- 縦方向に要素を並べ、中央揃えにする --}}
                     <div class="move-detail-card bg-white p-8 rounded-2xl shadow-2xl max-w-xl w-full text-center border border-blue-200 relative">
-                        {{-- ポケモン一覧ページに戻るボタン --}}
-                        <a href="{{ route('pokemons.index') }}" class="back-button absolute top-5 left-5 bg-blue-600 text-white px-4 py-2 rounded-lg no-underline text-sm transition-colors duration-300 hover:bg-blue-700">
-                            ← ポケモン一覧に戻る
-                        </a>
+
+                        {{-- 戻るボタンをカードの上部に配置し、Tailwindでマージンを調整 --}}
+                        <div class="mb-6 text-left"> {{-- ボタンを左寄せにするためのラッパー --}}
+                            <a href="{{ route('pokemons.index') }}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg no-underline text-sm transition-colors duration-300 hover:bg-blue-700">
+                                ← ポケモン一覧に戻る
+                            </a>
+                        </div>
 
                         <h1 class="text-gray-800 text-center mb-5 text-5xl font-extrabold capitalize drop-shadow-lg">
                             技: {{ $japaneseMoveName }}
@@ -15,12 +20,12 @@
 
                         {{-- 技の簡単な説明 (英語) --}}
                         @if(isset($move['effect_entries'][0]['effect']))
-                            <p class="text-gray-700 mb-6">{{ $move['effect_entries'][0]['effect'] }}</p>
+                            <p class="text-gray-700 mb-6 text-left">{{ $move['effect_entries'][0]['effect'] }}</p> {{-- 説明文も左寄せに --}}
                         @endif
 
                         {{-- 技のタイプ --}}
                         @if(isset($move['type']['name']))
-                            <div class="mb-4">
+                            <div class="mb-4 text-left"> {{-- タイプも左寄せに --}}
                                 <span class="font-bold text-gray-600">タイプ:</span>
                                 <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm capitalize">{{ ucfirst($move['type']['name']) }}</span>
                             </div>
